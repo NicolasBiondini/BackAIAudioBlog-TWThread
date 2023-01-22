@@ -2,6 +2,7 @@ import fs from "fs";
 import axios from "axios";
 import { assembly } from "../API/assembly.js";
 import { API_HOST, API_KEY } from "../config/config.js";
+import { getAI } from "../helpers/getAI.js";
 
 export const getAudio = async (req, res) => {
   // example url = /audio?id=aB52h93Bax0
@@ -46,15 +47,21 @@ export const getAudio = async (req, res) => {
             console.log(`Transcript Status: ${transcriptStatus}`);
             if (transcriptStatus === "error") {
               clearInterval(checkCompletionInterval);
+              return res
+                .status(500)
+                .json({ message: "Server Error", data: "Error transcript." });
             }
           } else if (transcriptStatus === "completed") {
             console.log("\nTranscription completed!\n");
             let transcriptText = transcript.data.text;
             console.log(`Your transcribed text:\n\n${transcriptText}`);
             clearInterval(checkCompletionInterval);
+
+            const finalData = await getAI(transcriptText, true);
+
             return res
               .status(200)
-              .json({ message: "All Correct", data: transcriptText });
+              .json({ message: "All Correct", data: finalData });
           }
         }, refreshInterval);
       } catch (error) {
