@@ -57,7 +57,7 @@ export const getAudio = async (req, res) => {
             console.log(`Your transcribed text:\n\n${transcriptText}`);
             clearInterval(checkCompletionInterval);
 
-            const finalData = await getAI(transcriptText, true);
+            const finalData = await getAI(transcriptText);
 
             return res
               .status(200)
