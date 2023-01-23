@@ -19,10 +19,8 @@ export const getAI = async (propmt, tweet) => {
       model: "text-davinci-003",
       prompt: textPropmt,
       temperature: 0,
-      max_tokens: tweet ? 300 : 1000,
+      max_tokens: tweet ? 100 : 1000,
     });
-
-    console.log(response.data);
 
     return response.data;
   } catch (error) {
